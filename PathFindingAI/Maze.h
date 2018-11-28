@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iostream>
 
 //0 = open space
 //1 = wall
@@ -13,7 +15,9 @@ class Maze
 private:
 	int m_mazeX;
 	int m_mazeY;
-	std::string maze;
+	std::string mazeInput;
+	std::string mazeTemp;
+	std::vector < std::vector <int> > maze;
 
 public:
 	Maze();

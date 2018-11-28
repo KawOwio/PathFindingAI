@@ -1,9 +1,7 @@
-#include <iostream>
 #include <Windows.h>
 #include <cmath>
 #include <time.h>
 #include <random>
-#include <fstream>
 
 #include "Maze.h"
 
@@ -20,37 +18,19 @@ int main()
 	srand(time(NULL));
 	int randomNumber;
 
-	std::string mazeStr;
-	std::string mazeNumber;
+	//Initialisation of the maze
+	mazeClass.MazeInnit("../Assets/Maps/maze3.txt");
 
-	mazeStr = mazeClass.MazeInnit("../Assets/Maps/maze1.txt");
-
-	std::cout << mazeStr << std::endl;
-	
-	std::cout << mazeStr.find(' ') << std::endl;
-	mazeNumber = mazeStr.substr(0, mazeStr.find(' '));
-
-	std::cout << mazeNumber << std::endl;
-
-	int x = atoi(mazeNumber.c_str());
-
-	mazeStr.erase(0, mazeStr.find(' ') + 1);
-	std::cout << mazeStr << std::endl;
-
-	//FINISH THIS
-
-	int maze[6][4] = { 0 };
-	
+	//20 chromosomes(y) each is 10 numbers long(x)
 	int chromosomes[10][20] = { 0 };
-
-	//Generates Y chromosomes with X binary numbers in each one !!!MAKE INTO A SEPARATE FUNCTION!!!
+	//Generates Y chromosomes with X binary numbers in each one
 	for (int y = 0; y < 20; y++)
 	{
-		std::cout << "Chromosome " << y + 1 << ": ";
+		//std::cout << "Chromosome " << y + 1 << ": ";
 		for (int x = 0; x < 10; x++)
 		{
 			chromosomes[x][y] = RNG();
-			std::cout << chromosomes[x][y];
+			//std::cout << chromosomes[x][y];
 		}
 		std::cout << std::endl;
 	}

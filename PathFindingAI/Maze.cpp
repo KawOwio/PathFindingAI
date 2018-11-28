@@ -27,12 +27,44 @@ std::string Maze::MazeInnit(std::string mazeFile)
 	{
 		std::string line;
 		std::getline(file, line);
-		maze = line;
+		mazeInput = line;
 	}
 	file.close();
 
+	//Finds first number in a string of numbers (number of columns)
+	mazeTemp = mazeInput.substr(0, mazeInput.find(' '));
+	mazeInput.erase(0, mazeInput.find(' ') + 1);
+	int columns = atoi(mazeTemp.c_str());
 
-	return maze;
+	//Finds second number in a string of numbers (number of rows)
+	mazeTemp = mazeInput.substr(0, mazeInput.find(' '));
+	mazeInput.erase(0, mazeInput.find(' ') + 1);
+	int rows = atoi(mazeTemp.c_str());
+
+	//Crates a 2D array that represents a maze
+	maze.resize(rows, std::vector<int>(columns, 0));
+
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			mazeTemp = mazeInput.substr(0, mazeInput.find(' '));
+			mazeInput.erase(0, mazeInput.find(' ') + 1);
+			maze[r][c] = atoi(mazeTemp.c_str());
+		}
+	}
+
+	//Output maze
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			std::cout << maze[r].at(c);
+		}
+		std::cout << std::endl;
+	}
+
+	return mazeInput;
 }
 
 void Maze::SetX(int _x)
