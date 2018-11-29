@@ -1,9 +1,12 @@
-#pragma once
+#ifndef _MAZE_H_
+#define _MAZE_H_
 
 #include <fstream>
 #include <string>
 #include <vector>
 #include <iostream>
+
+#include <glm.hpp>
 
 //0 = open space
 //1 = wall
@@ -13,21 +16,19 @@
 class Maze
 {
 private:
-	int m_mazeX;
-	int m_mazeY;
 	std::string mazeInput;
 	std::string mazeTemp;
 	std::vector < std::vector <int> > maze;
+	std::vector < std::vector <int> > positionsX;
+	std::vector < std::vector <int> > positionsY;
 
 public:
 	Maze();
 	~Maze();
 
-	std::string MazeInnit(std::string mazeFile);
+	void MazeInit(std::string mazeFile, glm::vec2 _windowSize);
+	void MazePositions();
 
-	void SetX(int _x);
-	void SetY(int _y);
-
-	int GetX();
-	int GetY();
 };
+
+#endif

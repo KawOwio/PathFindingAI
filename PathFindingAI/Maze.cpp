@@ -1,10 +1,5 @@
 #include "Maze.h"
 
-//0 = open space
-//1 = wall
-//2 = starting point
-//3 = end point
-
 Maze::Maze()
 {
 	
@@ -14,7 +9,7 @@ Maze::~Maze()
 
 }
 
-std::string Maze::MazeInnit(std::string mazeFile)
+void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 {
 	std::ifstream file(mazeFile);
 
@@ -43,7 +38,10 @@ std::string Maze::MazeInnit(std::string mazeFile)
 
 	//Crates a 2D array that represents a maze
 	maze.resize(rows, std::vector<int>(columns, 0));
+	positionsX.resize(rows, std::vector<int>(columns, 0));
+	positionsY.resize(rows, std::vector<int>(columns, 0));
 
+	//Generate maze from a text file
 	for (int r = 0; r < rows; r++)
 	{
 		for (int c = 0; c < columns; c++)
@@ -64,23 +62,47 @@ std::string Maze::MazeInnit(std::string mazeFile)
 		std::cout << std::endl;
 	}
 
-	return mazeInput;
-}
+	//Initialise positions for each maze "square"
+	glm::vec2 middlePoint((_windowSize.x / 2), (_windowSize.y / 2));
+	glm::vec2 temp((columns / 2), (rows / 2));
+	glm::vec2 startPoint((middlePoint.x - (temp.x * 32)), middlePoint.y - (temp.y * 32));
 
-void Maze::SetX(int _x)
-{
-	m_mazeX = _x;
-}
-void Maze::SetY(int _y)
-{
-	m_mazeY = _y;
-}
+	std::cout << startPoint.x << "\t" << startPoint.y << std::endl;
 
-int Maze::GetX()
-{
-	return m_mazeX;
-}
-int Maze::GetY()
-{
-	return m_mazeY;
+	for (int c = 0; c < columns; c++)
+	{
+		for (int r = 0; r < rows; r++)
+		{
+			positionsX[r][c] = startPoint.x + r * 32;
+		}
+	}	
+	
+	//FIX THIS//
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			positionsY[r][c] = startPoint.y + r * 32;
+		}
+	}
+
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			std::cout << positionsX[r][c];
+		}
+		std::cout << std::endl;
+	}
+
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			std::cout << positionsY[r][c];
+		}
+		std::cout << std::endl;
+	}
+
+
 }
