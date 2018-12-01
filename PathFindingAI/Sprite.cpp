@@ -7,11 +7,10 @@ Sprite::Sprite(SDL_Renderer* _renderer, std::string _file)
 	image = SDL_CreateTextureFromSurface(_renderer, bmpFile);
 	SDL_FreeSurface(bmpFile);
 
-	position.w = 32;
-	position.h = 32;
+	position.w = position.h = 64;
 	
-	position.x = 100;
-	position.y = 100;
+	position.x = 0;
+	position.y = 0;
 }
 
 Sprite::~Sprite()
@@ -22,8 +21,11 @@ Sprite::~Sprite()
 	}
 }
 
-void Sprite::Draw(SDL_Renderer* _renderer)
+void Sprite::Draw(SDL_Renderer* _renderer, int _posX, int _posY)
 {
+	position.x = _posX;
+	position.y = _posY;
+
 	if (image)
 	{
 		SDL_RenderCopy(_renderer, image, NULL, &position);

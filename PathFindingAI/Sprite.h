@@ -12,7 +12,7 @@ public:
 	Sprite(SDL_Renderer* _renderer, std::string _file);
 	~Sprite();
 
-	virtual void Draw(SDL_Renderer* _renderer);
+	virtual void Draw(SDL_Renderer* _renderer, int _posX, int _posY);
 
 private:
 	SDL_Texture* image;
