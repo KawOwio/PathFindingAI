@@ -22,13 +22,21 @@
 class Maze
 {
 private:
+	int rows;
+	int columns;
+	int numberOfChrom = 4;
+	int numberOfMoves;
+	int runNum = 0;
+	int generationNumber = 0;
+
 	std::string mazeInput;
 	std::string mazeTemp;
 
 	std::string chromosome[20];
+	std::string offspring[20];
 	std::string chromTemp;
 
-	std::string movement[20][5];
+	std::string movement[20][200];
 
 	std::vector < std::vector <int> > maze;
 	std::vector < std::vector <int> > chromArr;
@@ -37,11 +45,11 @@ private:
 
 	glm::vec2 playerPos;
 	glm::vec2 finishPoint;
+	glm::vec2 startingPoint;
 
-	int rows;
-	int columns;
-	int runNum = 0;
-	int chromNum = 0;
+	std::vector <float> percentage;
+	std::vector <int> pickOfFortune;
+	float fitness[4] = { 0.0f };
 
 public:
 	Maze();
@@ -53,6 +61,8 @@ public:
 	void Move();
 	void GenerateChromosomes();
 	int RNG();
+	void FitnessCalculation(int _runNum);
+	void Evolution();
 };
 
 #endif
