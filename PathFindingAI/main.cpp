@@ -1,12 +1,9 @@
-#include <Windows.h>
 #include <cmath>
 #include <time.h>
-#include <random>
 
 #include "Maze.h"
 
 int RNG(); //Generates a random number
-void Simulation(SDL_Renderer* _renderer);
 
 int main(int argc, char* args[])
 {
@@ -35,27 +32,7 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//Initialisation of the maze
-	mazeClass.MazeInit("../Assets/Maps/maze3.txt", windowSize);
-
-	//20 chromosomes(y) each is 10 numbers long(x)
-	int chromosomes[10][20];
-
-	//Make a text file for chromosomes
-	//(can see generated chromosomes after the programmed finished working)
-	std::ofstream chromOutput("../Assets/Chromosomes.txt");
-
-	//Generates Y chromosomes with X binary numbers in each one
-	//And outputs it to a .txt file
-	for (int y = 0; y < 20; y++)
-	{
-		for (int x = 0; x < 10; x++)
-		{
-			chromosomes[x][y] = RNG();
-			chromOutput << chromosomes[x][y];
-		}
-		chromOutput << " ";
-	}
-	chromOutput.close();
+	mazeClass.MazeInit("../Assets/Maps/maze2.txt", windowSize);
 
 	//Stops the clock
 	int stop_s = clock();
@@ -79,11 +56,6 @@ int main(int argc, char* args[])
 	std::cout << "\n\n\n";
 	system("PAUSE");
 	return 0;
-}
-
-void Simulation(SDL_Renderer* _renderer)
-{
-	
 }
 
 int RNG()
