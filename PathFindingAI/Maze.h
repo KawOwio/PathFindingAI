@@ -7,6 +7,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <random>
+#include <time.h>
 
 #include "Sprite.h"
 
@@ -24,19 +25,20 @@ class Maze
 private:
 	int rows;
 	int columns;
-	int numberOfChrom = 4;
+	int numberOfChrom = 10;
 	int numberOfMoves;
-	int runNum = 0;
-	int generationNumber = 0;
+	int stepNumber = 0;
+	int runNumber = 0;
+	bool firstRun = true;
 
 	std::string mazeInput;
 	std::string mazeTemp;
 
-	std::string chromosome[20];
-	std::string offspring[20];
+	std::string chromosome[140];
+	std::string offspring[140];
 	std::string chromTemp;
 
-	std::string movement[20][200];
+	std::string movement[140][200];
 
 	std::vector < std::vector <int> > maze;
 	std::vector < std::vector <int> > chromArr;
@@ -47,9 +49,10 @@ private:
 	glm::vec2 finishPoint;
 	glm::vec2 startingPoint;
 
+	float totalFitness;
 	std::vector <float> percentage;
 	std::vector <int> pickOfFortune;
-	float fitness[4] = { 0.0f };
+	float fitness[10] = { 0.0f };
 
 public:
 	Maze();

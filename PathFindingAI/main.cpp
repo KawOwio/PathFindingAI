@@ -1,5 +1,4 @@
 #include <cmath>
-#include <time.h>
 
 #include "Maze.h"
 
@@ -26,18 +25,18 @@ int main(int argc, char* args[])
 	Maze mazeClass;
 
 	//Starts the clock
-	int start_s = clock();
+	//int start_s = clock();
 
 	//Seed for random number generator 
 	srand(time(NULL));
 
 	//Initialisation of the maze
-	mazeClass.MazeInit("../Assets/Maps/maze3.txt", windowSize);
+	mazeClass.MazeInit("../Assets/Maps/maze1.txt", windowSize);
 
-	//Stops the clock
-	int stop_s = clock();
-	//Calculates time taken for program to run
-	std::cout << "Time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) << " seconds\n\n";
+	////Stops the clock
+	//int stop_s = clock();
+	////Calculates time taken for program to run
+	//std::cout << "Time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) << " seconds\n\n";
 
 	mazeClass.Simulation(renderer, "../Assets/Chromosomes.txt");
 

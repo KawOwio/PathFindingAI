@@ -65,27 +65,27 @@ void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 	//Initialise positions for each maze "square"
 	glm::vec2 middlePoint((_windowSize.x / 2), (_windowSize.y / 2));
 	glm::vec2 temp((columns / 2), (rows / 2));
-	glm::vec2 startPoint((middlePoint.x - (temp.x * 64)), middlePoint.y - (temp.y * 64));
+	glm::vec2 startPoint((middlePoint.x - (temp.x * 32)), middlePoint.y - (temp.y * 32));
 
 	//Initialising 2 2D vectors storing the positions of each "square"
 	for (int c = 0; c < columns; c++)
 	{
 		for (int r = 0; r < rows; r++)
 		{
-			positionsX[r][c] = startPoint.x + c * 64;
+			positionsX[r][c] = startPoint.x + c * 32;
 		}
 	}	
 	for (int r = 0; r < rows; r++)
 	{
 		for (int c = 0; c < columns; c++)
 		{
-			positionsY[r][c] = startPoint.y + r * 64;
+			positionsY[r][c] = startPoint.y + r * 32;
 		}
 	}
 
 	//CHANGE THIS FOR DEBUGGING
-	//numberOfMoves = rows * columns;
-	numberOfMoves = 20;
+	numberOfMoves = rows * columns / 2;
+	//numberOfMoves = 6;
 
 	//
 	chromArr.resize(numberOfChrom, std::vector<int>((numberOfMoves * 2), 0));
@@ -95,6 +95,7 @@ void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 
 void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 {
+	int generation = 0;
 	bool quit = false;
 	bool simulation = true;
 	bool start = true;
@@ -152,6 +153,8 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 
 		while(simulation == true)
 		{
+			int start_s = clock();
+
 			//Cleares the screen
 			SDL_RenderClear(_renderer);
 
@@ -161,6 +164,7 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 				Draw(_renderer, openSpace, wall, startPoint, endPoint);
 				start = false;
 				SDL_RenderPresent(_renderer);
+				//Sleep(200);
 			}
 
 			//Moves the "player" and outputs the maze to the screen
@@ -172,36 +176,41 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 			{
 				simulation = false;
 				Draw(_renderer, openSpace, wall, startPoint, endPoint);
+				std::cout << "***!!!!!! IT DID IT !!!!!!!***" << std::endl;
+				//Stops the clock
+				int stop_s = clock();
+				//Calculates time taken for program to run
+				std::cout << "Time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) << " seconds\n\n";
+				system("pause");
 			}
 
 			//Outputs on the screen
 			SDL_RenderPresent(_renderer);
-			Sleep(200);
+			//Sleep(200);
 
-			runNum++;
-			if (runNum >= (numberOfMoves))
+			stepNumber++;
+			if (stepNumber >= (numberOfMoves))
 			{
 				//Calculate fitnes
-				FitnessCalculation(runNum);
+				FitnessCalculation(runNumber);
 
 				//Resets characters position
-				std::cout << playerPos.x << "<-X\tY->" << playerPos.y << std::endl;
 				maze[playerPos.x][playerPos.y] = 0;
 				maze[startingPoint.x][startingPoint.y] = 2;
 				playerPos.x = startingPoint.x;
 				playerPos.y = startingPoint.y;
-				std::cout << playerPos.x << "<-X\tY->" << playerPos.y << std::endl;
 				start = true;
 
 				std::cout << "***NEW RUN***" << std::endl;
 
-				runNum = 0;
-				generationNumber++;
+				stepNumber = 0;
+				runNumber++;
 
-				if (generationNumber > numberOfChrom)
+				if (runNumber >= numberOfChrom)
 				{
 					Evolution();
-					generationNumber = 0;
+					std::cout << ++generation << std::endl;
+					runNumber = 0;
 				}
 			}
 		}
@@ -210,8 +219,7 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 
 void Maze::Draw(SDL_Renderer* _renderer, Sprite* _open, Sprite* _wall, Sprite* _start, Sprite* _end)
 {
-	bool firstRun = true;
-
+	
 	for (int r = 0; r < rows; r++)
 	{
 		for (int c = 0; c < columns; c++)
@@ -255,7 +263,7 @@ void Maze::Move()
 	11 - Left
 	*/
 
-	if (movement[generationNumber][runNum] == "00")
+	if (movement[runNumber][stepNumber] == "00")
 	{
 		//up
 		if (playerPos.x != 0)
@@ -267,15 +275,15 @@ void Maze::Move()
 			}
 			else
 			{
-				std::cout << "Collision with a wall!" << std::endl;
+				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
-			std::cout << "Collision with a border!" << std::endl;
+			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
-	else if (movement[generationNumber][runNum] == "01")
+	else if (movement[runNumber][stepNumber] == "01")
 	{
 		//right
 		if (playerPos.y != columns - 1)
@@ -287,15 +295,15 @@ void Maze::Move()
 			}
 			else
 			{
-				std::cout << "Collision with a wall!" << std::endl;
+				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
-			std::cout << "Collision with a border!" << std::endl;
+			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
-	else if (movement[generationNumber][runNum] == "10")
+	else if (movement[runNumber][stepNumber] == "10")
 	{
 		//down
 		if (playerPos.x != rows - 1)
@@ -307,15 +315,15 @@ void Maze::Move()
 			}
 			else
 			{
-				std::cout << "Collision with a border!" << std::endl;
+				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
-			std::cout << "Collision with a border!" << std::endl;
+			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
-	else if (movement[generationNumber][runNum] == "11")
+	else if (movement[runNumber][stepNumber] == "11")
 	{
 		//left
 		if (playerPos.y != 0)
@@ -327,12 +335,12 @@ void Maze::Move()
 			}
 			else
 			{
-				std::cout << "Collision with a border!" << std::endl;
+				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
-			std::cout << "Collision with a border!" << std::endl;
+			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
 	else
@@ -373,66 +381,65 @@ void Maze::FitnessCalculation(int _runNum)
 }
 void Maze::Evolution() 	  //WIP
 {
-	float totalFitness;
+	totalFitness = 0;
+
 	percentage.resize(numberOfChrom);
 	pickOfFortune.resize(numberOfChrom);
 	float random;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < numberOfChrom; i++)
 	{
-		totalFitness = +fitness[i];
+		totalFitness += fitness[i];
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < numberOfChrom; i++)
 	{
 		percentage[i] = fitness[i] / totalFitness * 100;
+		//std::cout << i+1 << ": " << percentage[i] << std::endl;
 	}
 
 	//Wheel of fortune
-	for (int i = 0; i < numberOfChrom; i++)
-	{
-		random = rand() % 101;
+	float totalPercentage = 0.0f;
+	int r = 0;
+	bool assigned = false;
 
-		if (random >= 0 && random <= fitness[0])
+	for (int n = 0; n < numberOfChrom; n++)
+	{
+		assigned = false;
+		totalPercentage = 0;
+		r = 0;
+		random = rand() % 101;
+		while (assigned == false)
 		{
-			//select 1st
-			pickOfFortune[i] = 1;
-		}
-		else if (random > fitness[0] && random <= (fitness[0] + fitness[1]))
-		{
-			//2nd
-			pickOfFortune[i] = 2;
-		}
-		else if (random > (fitness[0] + fitness[1]) && random <= (100 - fitness[3]))
-		{
-			//3rd
-			pickOfFortune[i] = 3;
-		}
-		else if (random > (100 - fitness[3]) && random <= fitness[3])
-		{
-			//4th
-			pickOfFortune[i] = 4;
+			totalPercentage += percentage[r];
+			if (random <= totalPercentage)
+			{
+				totalPercentage - percentage[r];
+				pickOfFortune[n] = r;
+				assigned = true;
+				//std::cout << "Pick " << n << ": " << pickOfFortune[n] << std::endl;
+			}
+			else
+			{
+				r++;
+			}
 		}
 	}
 
 	//Crossover operation
-	float crossoverRate = 0.7f;
+	int crossoverRate = 7;
 
 	for (int i = 0; i < numberOfChrom; i += 2)
 	{
-		//int crossover = rand() % 2;
-		int crossover = 0.9;
+		int crossover = rand() % 11;
 
 		if (crossover <= crossoverRate)
 		{
 			//Perform crossover
 			offspring[i] = chromosome[pickOfFortune[i]].substr(0, (numberOfMoves))
-				+ chromosome[pickOfFortune[i]].substr((numberOfMoves), (numberOfMoves * 2));
-			offspring[i+1] = chromosome[pickOfFortune[i+1]].substr(0, (numberOfMoves))
 				+ chromosome[pickOfFortune[i+1]].substr((numberOfMoves), (numberOfMoves * 2));
-			
-			std::cout << offspring[i] << std::endl;
-			std::cout << offspring[i+1] << std::endl;
+			offspring[i+1] = chromosome[pickOfFortune[i+1]].substr(0, (numberOfMoves))
+				+ chromosome[pickOfFortune[i]].substr((numberOfMoves), (numberOfMoves * 2));
 		}
 		else
 		{
@@ -449,13 +456,13 @@ void Maze::Evolution() 	  //WIP
 	}
 
 	//Mutation
-	int mutationRate = 1;
+	int mutationRate = 2;
 
 	for (int c = 0; c < numberOfChrom; c++)
 	{
 		for (int i = 0; i < (numberOfMoves * 2); i++)
 		{
-			int mutation = rand() % 100;
+			int mutation = rand() % 10;
 
 			if (mutation <= mutationRate)
 			{
