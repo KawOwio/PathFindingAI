@@ -31,7 +31,7 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//Initialisation of the maze
-	mazeClass.MazeInit("../Assets/Maps/maze1.txt", windowSize);
+	mazeClass.MazeInit("../Assets/Maps/maze5.txt", windowSize);
 
 	////Stops the clock
 	//int stop_s = clock();

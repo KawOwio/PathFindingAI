@@ -84,18 +84,23 @@ void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 	}
 
 	//CHANGE THIS FOR DEBUGGING
-	numberOfMoves = rows * columns / 2;
-	//numberOfMoves = 6;
+	numberOfMoves = rows * columns;
+	//numberOfMoves = 10;
 
 	//
 	chromArr.resize(numberOfChrom, std::vector<int>((numberOfMoves * 2), 0));
 	GenerateChromosomes();
 
+	//Resizes the rest of vectors
+	percentage.resize(numberOfChrom);
+	pickOfFortune.resize(100);
+	//fitness.resize(numberOfChrom);
+
 }
 
 void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 {
-	int generation = 0;
+	int generation = 1;
 	bool quit = false;
 	bool simulation = true;
 	bool start = true;
@@ -125,7 +130,7 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 		chromosome[i] = chromTemp.substr(0, chromTemp.find(' '));
 		chromTemp.erase(0, chromTemp.find(' ') + 1);
 	}
-
+	//Splits chromosomes into steps
 	for (int c = 0; c < numberOfChrom; c++)
 	{
 		chromTemp = chromosome[c];
@@ -139,7 +144,6 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 		std::cout << std::endl;
 	}
 
-
 	while (!quit)
 	{
 		//Quit simulation
@@ -151,10 +155,10 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 			}
 		}
 
+		int start_s = clock();
+
 		while(simulation == true)
 		{
-			int start_s = clock();
-
 			//Cleares the screen
 			SDL_RenderClear(_renderer);
 
@@ -164,7 +168,7 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 				Draw(_renderer, openSpace, wall, startPoint, endPoint);
 				start = false;
 				SDL_RenderPresent(_renderer);
-				//Sleep(200);
+				//Sleep(20);
 			}
 
 			//Moves the "player" and outputs the maze to the screen
@@ -174,19 +178,20 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 			//Checks if "the player" reached the end point
 			if (maze[finishPoint.x][finishPoint.y] == 2)
 			{
-				simulation = false;
 				Draw(_renderer, openSpace, wall, startPoint, endPoint);
 				std::cout << "***!!!!!! IT DID IT !!!!!!!***" << std::endl;
 				//Stops the clock
 				int stop_s = clock();
 				//Calculates time taken for program to run
 				std::cout << "Time: " << (stop_s - start_s) / double(CLOCKS_PER_SEC) << " seconds\n\n";
-				system("pause");
+				simulation = false;
+				SDL_RenderPresent(_renderer);
+				break;
 			}
 
 			//Outputs on the screen
 			SDL_RenderPresent(_renderer);
-			//Sleep(200);
+			//Sleep(20);
 
 			stepNumber++;
 			if (stepNumber >= (numberOfMoves))
@@ -201,15 +206,30 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 				playerPos.y = startingPoint.y;
 				start = true;
 
-				std::cout << "***NEW RUN***" << std::endl;
+				//std::cout << "***NEW RUN***" << std::endl;
 
 				stepNumber = 0;
+				penalty = 0;
 				runNumber++;
 
 				if (runNumber >= numberOfChrom)
 				{
 					Evolution();
 					std::cout << ++generation << std::endl;
+					//Splits chromosomes into steps
+					for (int c = 0; c < numberOfChrom; c++)
+					{
+						chromTemp = chromosome[c];
+						std::cout << "Chromosome " << c + 1 << ": ";
+						for (int i = 0; i < (numberOfMoves); i++)
+						{
+							movement[c][i] = chromTemp.substr(0, 2);
+							chromTemp.erase(0, 2);
+							std::cout << movement[c][i];
+						}
+						std::cout << std::endl;
+					}
+
 					runNumber = 0;
 				}
 			}
@@ -270,16 +290,18 @@ void Maze::Move()
 		{
 			if (maze[playerPos.x - 1][playerPos.y] != 1)
 			{
-				maze[playerPos.x][playerPos.y] = 0;
-				maze[playerPos.x - 1][playerPos.y] = 2;
+			maze[playerPos.x][playerPos.y] = 0;
+			maze[playerPos.x - 1][playerPos.y] = 2;
 			}
 			else
 			{
+				penalty += 10;
 				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
+			penalty += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -290,16 +312,19 @@ void Maze::Move()
 		{
 			if (maze[playerPos.x][playerPos.y + 1] != 1)
 			{
+
 				maze[playerPos.x][playerPos.y] = 0;
 				maze[playerPos.x][playerPos.y + 1] = 2;
 			}
 			else
 			{
+				penalty += 10;
 				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
+			penalty += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -315,11 +340,13 @@ void Maze::Move()
 			}
 			else
 			{
+				penalty += 10;
 				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
+			penalty += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -335,17 +362,19 @@ void Maze::Move()
 			}
 			else
 			{
+				penalty += 10;
 				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
+			penalty += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
 	else
 	{
-		std::cout << "No movement" << std::endl;
+		std::cout << "No movement(bug)" << std::endl;
 	}
 }
 void Maze::GenerateChromosomes()
@@ -377,14 +406,20 @@ void Maze::FitnessCalculation(int _runNum)
 	float Dx = finishPoint.x - playerPos.x;
 	float Dy = finishPoint.y - playerPos.y;
 
-	fitness[_runNum] = 1 / (Dx + Dy + 1);
+	if (Dx < 0)
+	{
+		Dx = 0;
+	}
+	if (Dy < 0)
+	{
+		Dy = 0;
+	}
+
+	fitness[_runNum] = 1 / (Dx + Dy + penalty + 1);
 }
 void Maze::Evolution() 	  //WIP
 {
 	totalFitness = 0;
-
-	percentage.resize(numberOfChrom);
-	pickOfFortune.resize(numberOfChrom);
 	float random;
 
 	for (int i = 0; i < numberOfChrom; i++)
@@ -408,7 +443,8 @@ void Maze::Evolution() 	  //WIP
 		assigned = false;
 		totalPercentage = 0;
 		r = 0;
-		random = rand() % 101;
+		random = rand() % 100;
+
 		while (assigned == false)
 		{
 			totalPercentage += percentage[r];
@@ -421,25 +457,26 @@ void Maze::Evolution() 	  //WIP
 			}
 			else
 			{
-				r++;
+				r++; 
 			}
 		}
 	}
 
-	//Crossover operation
+	//Crossover operation (at random point)
 	int crossoverRate = 7;
 
 	for (int i = 0; i < numberOfChrom; i += 2)
 	{
 		int crossover = rand() % 11;
+		
 
 		if (crossover <= crossoverRate)
 		{
 			//Perform crossover
-			offspring[i] = chromosome[pickOfFortune[i]].substr(0, (numberOfMoves))
-				+ chromosome[pickOfFortune[i+1]].substr((numberOfMoves), (numberOfMoves * 2));
-			offspring[i+1] = chromosome[pickOfFortune[i+1]].substr(0, (numberOfMoves))
-				+ chromosome[pickOfFortune[i]].substr((numberOfMoves), (numberOfMoves * 2));
+			offspring[i] = chromosome[pickOfFortune[i]].substr(0, numberOfMoves)
+				+ chromosome[pickOfFortune[i+1]].substr(numberOfMoves, (numberOfMoves * 2));
+			offspring[i+1] = chromosome[pickOfFortune[i+1]].substr(0, numberOfMoves)
+				+ chromosome[pickOfFortune[i]].substr(numberOfMoves, (numberOfMoves * 2));
 		}
 		else
 		{
@@ -455,8 +492,14 @@ void Maze::Evolution() 	  //WIP
 		chromosome[i] = offspring[i];
 	}
 
+	//Making children to mutate
+	for (int i = 0; i < numberOfChrom; i++)
+	{
+		chromosome[i] = offspring[i];
+	}
+
 	//Mutation
-	int mutationRate = 2;
+	int mutationRate = 3;
 
 	for (int c = 0; c < numberOfChrom; c++)
 	{

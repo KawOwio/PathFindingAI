@@ -29,6 +29,7 @@ private:
 	int numberOfMoves;
 	int stepNumber = 0;
 	int runNumber = 0;
+	int penalty = 0;
 	bool firstRun = true;
 
 	std::string mazeInput;
@@ -39,7 +40,7 @@ private:
 	std::string chromTemp;
 
 	std::string movement[140][200];
-
+	
 	std::vector < std::vector <int> > maze;
 	std::vector < std::vector <int> > chromArr;
 	std::vector < std::vector <int> > positionsX;
@@ -52,7 +53,10 @@ private:
 	float totalFitness;
 	std::vector <float> percentage;
 	std::vector <int> pickOfFortune;
-	float fitness[10] = { 0.0f };
+	//std::vector <float> fitness;
+	float fitness[10] = { 0 };
+	//double percentage[10] = { 0 };
+	
 
 public:
 	Maze();
