@@ -38,6 +38,7 @@ void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 
 	//Crates a 2D vector that represents a maze
 	maze.resize(rows, std::vector<int>(columns, 0));
+	mazeVisited.resize(rows, std::vector<int>(columns, 0));
 	positionsX.resize(rows, std::vector<int>(columns, 0));
 	positionsY.resize(rows, std::vector<int>(columns, 0));
 
@@ -85,7 +86,7 @@ void Maze::MazeInit(std::string mazeFile, glm::vec2 _windowSize)
 
 	//CHANGE THIS FOR DEBUGGING
 	numberOfMoves = rows * columns;
-	//numberOfMoves = 10;
+	//numberOfMoves = 6;
 
 	//
 	chromArr.resize(numberOfChrom, std::vector<int>((numberOfMoves * 2), 0));
@@ -191,7 +192,7 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 
 			//Outputs on the screen
 			SDL_RenderPresent(_renderer);
-			//Sleep(20);
+			//Sleep(10);
 
 			stepNumber++;
 			if (stepNumber >= (numberOfMoves))
@@ -209,11 +210,16 @@ void Maze::Simulation(SDL_Renderer *_renderer, std::string _chromFile)
 				//std::cout << "***NEW RUN***" << std::endl;
 
 				stepNumber = 0;
-				penalty = 0;
+				
+				
 				runNumber++;
 
 				if (runNumber >= numberOfChrom)
 				{
+					for (int i = 0; i < numberOfChrom; i++)
+					{
+						penalty[i] = 0;
+					}
 					Evolution();
 					std::cout << ++generation << std::endl;
 					//Splits chromosomes into steps
@@ -247,6 +253,7 @@ void Maze::Draw(SDL_Renderer* _renderer, Sprite* _open, Sprite* _wall, Sprite* _
 			if (maze[r][c] == 1)
 			{
 				_wall->Draw(_renderer, positionsX[r][c], positionsY[r][c]);
+				mazeVisited[r][c] = 1;
 			}
 			else if (maze[r][c] == 2)
 			{
@@ -290,18 +297,22 @@ void Maze::Move()
 		{
 			if (maze[playerPos.x - 1][playerPos.y] != 1)
 			{
-			maze[playerPos.x][playerPos.y] = 0;
-			maze[playerPos.x - 1][playerPos.y] = 2;
+				maze[playerPos.x][playerPos.y] = 0;
+				maze[playerPos.x - 1][playerPos.y] = 2;
+				if (mazeVisited[playerPos.x - 1][playerPos.y] == 1)
+				{
+					penalty[runNumber] += 10;
+				}
 			}
 			else
 			{
-				penalty += 10;
+				penalty[runNumber] += 10;
 				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
-			penalty += 10;
+			penalty[runNumber] += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -315,16 +326,20 @@ void Maze::Move()
 
 				maze[playerPos.x][playerPos.y] = 0;
 				maze[playerPos.x][playerPos.y + 1] = 2;
+				if (mazeVisited[playerPos.x][playerPos.y + 1] == 1)
+				{
+					penalty[runNumber] += 10;
+				}
 			}
 			else
 			{
-				penalty += 10;
+				penalty[runNumber] += 10;
 				//std::cout << "Collision with a wall!" << std::endl;
 			}
 		}
 		else
 		{
-			penalty += 10;
+			penalty[runNumber] += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -337,16 +352,20 @@ void Maze::Move()
 			{
 				maze[playerPos.x][playerPos.y] = 0;
 				maze[playerPos.x + 1][playerPos.y] = 2;
+				if (mazeVisited[playerPos.x + 1][playerPos.y] == 1)
+				{
+					penalty[runNumber] += 10;
+				}
 			}
 			else
 			{
-				penalty += 10;
+				penalty[runNumber] += 10;
 				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
-			penalty += 10;
+			penalty[runNumber] += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -359,16 +378,20 @@ void Maze::Move()
 			{
 				maze[playerPos.x][playerPos.y] = 0;
 				maze[playerPos.x][playerPos.y - 1] = 2;
+				if (mazeVisited[playerPos.x][playerPos.y - 1] == 1)
+				{
+					penalty[runNumber] += 10;
+				}
 			}
 			else
 			{
-				penalty += 10;
+				penalty[runNumber] += 10;
 				//std::cout << "Collision with a border!" << std::endl;
 			}
 		}
 		else
 		{
-			penalty += 10;
+			penalty[runNumber] += 10;
 			//std::cout << "Collision with a border!" << std::endl;
 		}
 	}
@@ -414,8 +437,14 @@ void Maze::FitnessCalculation(int _runNum)
 	{
 		Dy = 0;
 	}
-
-	fitness[_runNum] = 1 / (Dx + Dy + penalty + 1);
+	int totalPen = 0;
+	for (int i = 0; i < numberOfChrom; i++)
+	{
+		totalPen += penalty[i];
+	}
+	std::cout << "Penalty: " << totalPen << std::endl;
+	fitness[_runNum] = 1 / (Dx + Dy + penalty[runNumber] + 1);
+	totalPen = 0;
 }
 void Maze::Evolution() 	  //WIP
 {

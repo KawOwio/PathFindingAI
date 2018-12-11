@@ -29,7 +29,7 @@ private:
 	int numberOfMoves;
 	int stepNumber = 0;
 	int runNumber = 0;
-	int penalty = 0;
+	int penalty[10] = { 0 };
 	bool firstRun = true;
 
 	std::string mazeInput;
@@ -42,6 +42,7 @@ private:
 	std::string movement[140][200];
 	
 	std::vector < std::vector <int> > maze;
+	std::vector < std::vector <int> > mazeVisited;
 	std::vector < std::vector <int> > chromArr;
 	std::vector < std::vector <int> > positionsX;
 	std::vector < std::vector <int> > positionsY;

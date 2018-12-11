@@ -90,6 +90,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>\\bournemouth.ac.uk\data\Student\Home\SciTech\s5065617\Desktop\Pathfinding_AI\PathFindingAI\SDKs\SDL2\include;\\bournemouth.ac.uk\data\Student\Home\SciTech\s5065617\Desktop\Pathfinding_AI\PathFindingAI\SDKs\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
