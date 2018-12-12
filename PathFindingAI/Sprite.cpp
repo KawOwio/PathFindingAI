@@ -1,5 +1,6 @@
 #include "Sprite.h"
 
+
 Sprite::Sprite(SDL_Renderer* _renderer, std::string _file)
 {
 	const char *file = _file.c_str();
@@ -7,7 +8,7 @@ Sprite::Sprite(SDL_Renderer* _renderer, std::string _file)
 	image = SDL_CreateTextureFromSurface(_renderer, bmpFile);
 	SDL_FreeSurface(bmpFile);
 
-	position.w = position.h = 32;
+	
 	
 	position.x = 0;
 	position.y = 0;
@@ -21,8 +22,9 @@ Sprite::~Sprite()
 	}
 }
 
-void Sprite::Draw(SDL_Renderer* _renderer, int _posX, int _posY)
+void Sprite::Draw(SDL_Renderer* _renderer, int _posX, int _posY, int _d)
 {
+	position.w = position.h = _d;
 	position.x = _posX;
 	position.y = _posY;
 

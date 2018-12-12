@@ -6,13 +6,15 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 
+
+
 class Sprite
 {
 public:
 	Sprite(SDL_Renderer* _renderer, std::string _file);
 	~Sprite();
 
-	virtual void Draw(SDL_Renderer* _renderer, int _posX, int _posY);
+	virtual void Draw(SDL_Renderer* _renderer, int _posX, int _posY, int _d);
 
 private:
 	SDL_Texture* image;

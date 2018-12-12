@@ -31,7 +31,7 @@ int main(int argc, char* args[])
 	srand(time(NULL));
 
 	//Initialisation of the maze
-	mazeClass.MazeInit("../Assets/Maps/maze5.txt", windowSize);
+	mazeClass.MazeInit("../Assets/Maps/tofix.txt", windowSize);
 
 	////Stops the clock
 	//int stop_s = clock();
@@ -52,8 +52,6 @@ int main(int argc, char* args[])
 
 	SDL_Quit();
 
-	std::cout << "\n\n\n";
-	system("PAUSE");
 	return 0;
 }
 
