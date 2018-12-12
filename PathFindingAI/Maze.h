@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <random>
 #include <time.h>
+#include <cmath>
 
 #include "Sprite.h"
 
@@ -19,7 +20,6 @@ struct Coordinates
 	glm::vec2 position;
 	double cost = 0.0;
 	bool visited = false;
-	Coordinates *pointerToParent;
 };
 
 class Maze
@@ -30,7 +30,6 @@ private:
 	int columns;
 
 	bool firstRun = true;
-	int algorithm = 1;	//2 == A* / 1 == GA
 
 	std::string mazeInput;
 	std::string mazeTemp;
@@ -49,7 +48,6 @@ private:
 	int stepNumber = 0;
 	int runNumber = 0;
 	int penalty[140] = { 0 };
-	int totalPen = 0;
 	float totalFitness;
 
 	std::string chromosome[140];
@@ -67,11 +65,14 @@ private:
 	Coordinates nodeLast;
 	Coordinates nodeGoal;
 
-	int dx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
-	int dy[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+	int dx[4] = {1, 0, -1, 0};
+	int dy[4] = {0, 1, 0, -1};
+	//int dx[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+	//int dy[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 
 	std::vector < Coordinates > closedNodes;
 	std::vector < Coordinates > openNodes;
+	std::vector < Coordinates > potentialNodes;
 
 public:
 	Maze();
@@ -79,7 +80,7 @@ public:
 
 	//Shared
 	void MazeInit(std::string mazeFile, glm::vec2 _windowSize);
-	void Simulation(SDL_Renderer *_renderer, std::string _chromFile);
+	void Simulation(SDL_Renderer *_renderer, std::string _chromFile, char _c);
 	void Draw(SDL_Renderer* _renderer, Sprite* _open, Sprite* _wall, Sprite* _start, Sprite* _end);
 
 	//GA
@@ -93,7 +94,5 @@ public:
 	void CalculateCost(Coordinates &_node);
 	void SearchAdjacent();
 	bool CheckNodes(Coordinates _adj, std::vector <Coordinates> _list);
-	void MoveAStar();
-
 };
 #endif

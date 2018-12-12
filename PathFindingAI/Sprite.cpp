@@ -8,8 +8,6 @@ Sprite::Sprite(SDL_Renderer* _renderer, std::string _file)
 	image = SDL_CreateTextureFromSurface(_renderer, bmpFile);
 	SDL_FreeSurface(bmpFile);
 
-	
-	
 	position.x = 0;
 	position.y = 0;
 }
